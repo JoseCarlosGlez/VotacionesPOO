@@ -1,6 +1,7 @@
 EventListener();
 
 const contenedor = document.getElementById("Contenedor");
+const votaciones = new Votaciones();
 
 function EventListener() {
   document
@@ -10,8 +11,7 @@ function EventListener() {
 function CambiarPantalla() {
   const PreguntaVotacion = document.getElementById("TextoVotacion").value;
 
-  if (PreguntaVotacion == "") {return
-  }
+  if (PreguntaVotacion == "") return;
 
   eliminarDom();
   crearPantallaVotaciones(PreguntaVotacion);
@@ -42,7 +42,7 @@ function crearPantallaVotaciones(TextoVotaciones) {
   buttonFavor.setAttribute("class", "btn btn-outline-success mr-3 ");
   buttonFavor.innerText = "A favor";
 
-  const buttonContra= document.createElement("button");
+  const buttonContra = document.createElement("button");
   buttonContra.setAttribute("class", "btn btn-outline-warning mr-3 ");
   buttonContra.innerText = "En contra";
 
@@ -50,13 +50,44 @@ function crearPantallaVotaciones(TextoVotaciones) {
   buttonAbstinencia.setAttribute("class", "btn btn-outline-info ");
   buttonAbstinencia.innerText = "Abstención";
 
+  const col12buttonfinalizar = document.createElement("div");
+  col12buttonfinalizar.setAttribute("class", "col-12 text-center mt-5");
+
+  const buttonFinalizar = document.createElement("a");
+  buttonFinalizar.innerText = "Finalizar";
+  buttonFinalizar.setAttribute("class", "btn btn-outline-dark ");
+  buttonFinalizar.setAttribute("id", "btnFinalizar");
+
   contenedor.appendChild(row);
   row.appendChild(col12);
   col12.appendChild(input);
-  contenedor.appendChild(row)
-  row.appendChild(col12buttons)
-  col12buttons.appendChild(buttonFavor)
-  col12buttons.appendChild(buttonContra)
-  col12buttons.appendChild(buttonAbstinencia)
- 
+  contenedor.appendChild(row);
+  row.appendChild(col12buttons);
+  col12buttons.appendChild(buttonFavor);
+  col12buttons.appendChild(buttonContra);
+  col12buttons.appendChild(buttonAbstinencia);
+  row.appendChild(col12buttonfinalizar);
+  col12buttonfinalizar.appendChild(buttonFinalizar);
+
+  agregarEventListenerButtons();
+}
+
+function agregarEventListenerButtons() {
+  const buttons = document.getElementsByTagName("button");
+
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener("click", ContarVotos);
+  }
+
+  document
+    .getElementById("btnFinalizar")
+    .addEventListener("click", finalizarApp);
+}
+
+function ContarVotos(e) {
+  votaciones.ContarVotos(e.target.innerText);
+}
+
+function finalizarApp() {
+  votaciones.VerificarGanador();
 }
