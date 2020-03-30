@@ -1,93 +1,37 @@
+const imagen = document.getElementById("Carro");
+let sizeMarginLeft = 0;
+
+const carro = new Carro(0, 0);
+
+let PosicionImagenes = [];
+
+const contenedor = document.getElementById("contenedor");
+
 EventListener();
 
-const contenedor = document.getElementById("Contenedor");
-const votaciones = new Votaciones();
-
 function EventListener() {
-  document
-    .getElementById("btnCambio")
-    .addEventListener("click", CambiarPantalla);
-}
-function CambiarPantalla() {
-  const PreguntaVotacion = document.getElementById("TextoVotacion").value;
-
-  if (PreguntaVotacion == "") return;
-
-  eliminarDom();
-  crearPantallaVotaciones(PreguntaVotacion);
+  ObtenerMargin();
+  document.addEventListener("keydown", moveCar);
+  contenedor.addEventListener("click", PonerPremio);
+  window.addEventListener("resize", ObtenerMargin);
 }
 
-function eliminarDom() {
-  while (contenedor.firstChild) {
-    contenedor.firstChild.remove();
-  }
+function moveCar(event) {
+
+  carro.MoverCarro(event.key, imagen, PosicionImagenes);
 }
 
-function crearPantallaVotaciones(TextoVotaciones) {
-  const input = document.createElement("input");
-  input.setAttribute("class", "form-control");
-  input.value = TextoVotaciones;
-  input.disabled = true;
+function PonerPremio(event) {
+  const premio = new Premios(event.x, event.y);
 
-  const row = document.createElement("div");
-  row.setAttribute("class", "row mt-5 ");
-
-  const col12 = document.createElement("div");
-  col12.setAttribute("class", "col-12");
-
-  const col12buttons = document.createElement("div");
-  col12buttons.setAttribute("class", "col-12 mt-3 text-center");
-
-  const buttonFavor = document.createElement("button");
-  buttonFavor.setAttribute("class", "btn btn-outline-success mr-3 ");
-  buttonFavor.innerText = "A favor";
-
-  const buttonContra = document.createElement("button");
-  buttonContra.setAttribute("class", "btn btn-outline-warning mr-3 ");
-  buttonContra.innerText = "En contra";
-
-  const buttonAbstinencia = document.createElement("button");
-  buttonAbstinencia.setAttribute("class", "btn btn-outline-info ");
-  buttonAbstinencia.innerText = "Abstención";
-
-  const col12buttonfinalizar = document.createElement("div");
-  col12buttonfinalizar.setAttribute("class", "col-12 text-center mt-5");
-
-  const buttonFinalizar = document.createElement("a");
-  buttonFinalizar.innerText = "Finalizar";
-  buttonFinalizar.setAttribute("class", "btn btn-outline-dark ");
-  buttonFinalizar.setAttribute("id", "btnFinalizar");
-
-  contenedor.appendChild(row);
-  row.appendChild(col12);
-  col12.appendChild(input);
-  contenedor.appendChild(row);
-  row.appendChild(col12buttons);
-  col12buttons.appendChild(buttonFavor);
-  col12buttons.appendChild(buttonContra);
-  col12buttons.appendChild(buttonAbstinencia);
-  row.appendChild(col12buttonfinalizar);
-  col12buttonfinalizar.appendChild(buttonFinalizar);
-
-  agregarEventListenerButtons();
+  PosicionImagenes.push(premio.CrearImagen(contenedor, sizeMarginLeft));
+  console.log(PosicionImagenes);
 }
 
-function agregarEventListenerButtons() {
-  const buttons = document.getElementsByTagName("button");
+function ObtenerMargin() {
+  const MarginContainer = window
+    .getComputedStyle(contenedor)
+    .getPropertyValue("margin-left");
 
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].addEventListener("click", ContarVotos);
-  }
-
-  document
-    .getElementById("btnFinalizar")
-    .addEventListener("click", finalizarApp);
-}
-
-function ContarVotos(e) {
-  votaciones.ContarVotos(e.target.innerText);
-}
-
-function finalizarApp() {
-  votaciones.VerificarGanador();
+  sizeMarginLeft = MarginContainer.substring(0, MarginContainer.length - 2);
 }
